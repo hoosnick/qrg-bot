@@ -18,5 +18,8 @@ Bot encrypts your text, file messages into a qr code, and takes link, media file
 - [Lincoln Loop](https://github.com/lincolnloop) for [qrcode](https://github.com/lincolnloop/python-qrcode).
 - [eternnoir](https://github.com/eternnoir) for [PyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI).
 - [coder2020official](https://github.com/coder2020official) for [pytba-templates](https://github.com/coder2020official/telebot_template).
+- [theskumar](https://github.com/theskumar) for [python-dotenv](https://github.com/theskumar/python-dotenv)
+- [Delgan](https://github.com/Delgan) for [loguru](https://github.com/Delgan/loguru)
+- [NaturalHistoryMuseum](https://github.com/NaturalHistoryMuseum/) for [pyzbar](https://github.com/NaturalHistoryMuseum/pyzbar)
 
 Made with 💕 by [@hoosnick](https://github.com/hoosnick)
