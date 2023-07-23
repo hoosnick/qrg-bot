@@ -1,0 +1,6 @@
+.env
+env/
+__pycache__/
+*.db
+qr-codes/
+*.log
