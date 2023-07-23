@@ -18,8 +18,7 @@ path = os.getcwd()
 
 
 def create_qr(
-    data: str, user_id: int, style: int = 1,
-    with_all_styles: bool = False
+    data: str, user_id: int, style: int = 1, with_all_styles: bool = False
 ) -> t.List[str]:
     styles: t.Dict[int, moduledrawers.QRModuleDrawer] = {
         1: moduledrawers.SquareModuleDrawer,
@@ -82,7 +81,7 @@ def delete_image(img: t.Union[str, None]):
     os.unlink(img)
 
 
-def read_qr(image):
+def read_qr(image: str) -> str:
     img = Image.open(image)
     output = pyzbar.decode(img)
     text = output[0][0].decode('utf-8')
@@ -97,3 +96,14 @@ def upload_photo(photo: str, bot: telebot.TeleBot):
     return {
         "photo_file_id": str(m.photo[-1].file_id)
     }
+
+
+def download_photo(bot: telebot.TeleBot, photo: telebot.types.PhotoSize):
+    file_info = bot.get_file(photo.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+    img_path = f'{path}/qr-codes/qrcode_{photo.file_unique_id}.png'
+
+    with open(img_path, 'wb') as new_file:
+        new_file.write(downloaded_file)
+
+    return img_path
