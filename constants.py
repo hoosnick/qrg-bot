@@ -1,11 +1,13 @@
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 TOKEN = os.getenv('TOKEN', "token_from_botfather")
-IMGBB_KEY = os.getenv('IMGBB_KEY', "api_key")
-STYLES_PREVIEW = os.getenv('STYLES_PREVIEW', "https://github.com/lincolnloop/python-qrcode/raw/master/doc/module_drawers.png")
+ADMIN = os.getenv('ADMIN')
+
+STYLES_PREVIEW = "https://raw.githubusercontent.com/lincolnloop/python-qrcode/main/doc/module_drawers.png"
 
 CONTENT_TYPES = [
     'audio', 'document', 'sticker',
