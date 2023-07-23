@@ -6,8 +6,7 @@ from qrcodebot.buttons.keyboards import Buttons
 from qrcodebot.database.db import DataBase
 from qrcodebot.utils.error_handler import error_handler
 from qrcodebot.utils.qrutils import (
-    create_qr, delete_image,
-    path, read_qr, upload_photo
+    create_qr, delete_image, download_photo, read_qr, upload_photo
 )
 
 _CONTENT_TYPES = [
@@ -77,53 +76,54 @@ def file(m: types.Message, bot: TeleBot):
                     reply_to_message_id=m.message_id
                 )
         except Exception as e:
-            bot.reply_to(
-                message=m, text='<b>I can\'t do anything with this!</b>',
-            )
+            bot.reply_to(m, '<b>I can\'t do anything with this!</b>')
             logger.exception(e)
         finally:
             delete_image(img)
 
 
 def photo(m: types.Message, bot: TeleBot):
-    img_path = None
+    _photo = m.photo[-1]
+    img_path = download_photo(bot, _photo)
+    reply_to = m.message_id
+
     try:
-        if isinstance(m.reply_to_message, types.Message) and \
-                m.chat.type in ['supergroup', 'group']:
-            is_replied = True
-            _photo = m.reply_to_message.photo[-1] \
-                if m.reply_to_message.content_type == 'photo' \
-                else m.photo[-1]
-        else:
-            _photo = m.photo[-1]
-            is_replied = False
-
-        file_info = bot.get_file(_photo.file_id)
-        downloaded_file = bot.download_file(file_info.file_path)
-        img_path = f'{path}/qr-codes/qrcode_{_photo.file_unique_id}.png'
-
-        with open(img_path, 'wb') as new_file:
-            new_file.write(downloaded_file)
-
-        reply_to = m.message_id if not is_replied \
-            else m.reply_to_message.message_id
         text: str = read_qr(img_path)
 
         if len(text.split('|')) == 2 and text.startswith(tuple(CONTENT_TYPES)):
-            my_data = text.split('|')
-            code = f"bot.send_{my_data[0]}({m.chat.id}, '{my_data[1]}', reply_to_message_id={reply_to})"
+            data = text.split('|')
+            code = f"bot.send_{data[0]}({m.chat.id}, '{data[1]}', reply_to_message_id={reply_to})"
             exec(code)
         else:
             bot.send_message(
-                chat_id=m.chat.id, text=text,
-                reply_to_message_id=reply_to
+                chat_id=m.chat.id, text=text, reply_to_message_id=reply_to
             )
     except Exception as e:
-        if m.chat.type not in ['supergroup', 'group']:
-            bot.reply_to(m, '<b>I can\'t do anything with this!</b>')
+        bot.reply_to(m, '<b>I can\'t do anything with this!</b>')
         logger.exception(e)
     finally:
-        if bot.get_chat_member(m.chat.id, bot.get_me().id).can_delete_messages:
+        delete_image(img_path)
+
+
+def reply_to_photo(m: types.Message, bot: TeleBot):
+    _photo = m.reply_to_message.photo[-1]
+    reply_to = m.reply_to_message.message_id
+    img_path = download_photo(bot, _photo)
+
+    try:
+        text: str = read_qr(img_path)
+
+        if len(text.split('|')) == 2 and text.startswith(tuple(CONTENT_TYPES)):
+            data = text.split('|')
+            code = f"bot.send_{data[0]}({m.chat.id}, '{data[1]}', reply_to_message_id={reply_to})"
+            exec(code)
+        else:
+            bot.send_message(
+                chat_id=m.chat.id, text=text, reply_to_message_id=reply_to
+            )
+    finally:
+        is_bot = bot.get_chat_member(m.chat.id, bot.get_me().id)
+        if is_bot.can_delete_messages:
             bot.delete_message(m.chat.id, m.message_id)
 
         delete_image(img_path)
@@ -182,6 +182,7 @@ def callback_factory(c: types.CallbackQuery, bot: TeleBot):
             reply_markup=bt.faq(),
             disable_web_page_preview=True
         )
+
     elif c.data == 'change_style':
         bot.delete_message(c.from_user.id, c.message.message_id)
         bot.send_photo(
@@ -190,6 +191,7 @@ def callback_factory(c: types.CallbackQuery, bot: TeleBot):
             caption="<i>Choose style:</i>",
             reply_markup=bt.styles()
         )
+
     elif c.data == 'back':
         bot.delete_message(c.from_user.id, c.message.message_id)
         bot.send_message(
@@ -198,6 +200,7 @@ def callback_factory(c: types.CallbackQuery, bot: TeleBot):
             reply_markup=bt.main_menu(),
             parse_mode='Markdown'
         )
+
     elif c.data.endswith('style'):
         style = c.data.split('_')[0]
         db.update_style(c.from_user.id, STYLES[style])

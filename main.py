@@ -36,10 +36,10 @@ def register_handlers() -> None:
         pass_bot=True
     )
     bot.register_message_handler(
-        callback=users.photo,
+        callback=users.reply_to_photo,
         chat_types=['supergroup', 'group'],
-        commands=['read'],
-        pass_bot=True
+        func=lambda m: m.reply_to_message.content_type == 'photo',
+        commands=['read', 'r'], pass_bot=True
     )
     bot.register_inline_handler(
         callback=users.inline_photo,
