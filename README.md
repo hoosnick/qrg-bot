@@ -10,8 +10,6 @@ Bot encrypts your text, file messages into a qr code, and takes link, media file
 ![image](https://github.com/hoosnick/qrg-bot/assets/73847672/ad7e477d-d871-4b96-9b2f-6c002b0b8fcc)
 <br>In groups: reply with `/read` command to image(qr code)
 
-![image](https://github.com/hoosnick/qrg-bot/assets/73847672/345c613b-0beb-433c-9431-1293412e2db6)
-
 ***
 ## Installation:
 - `git clone https://github.com/hoosnick/qrg-bot`<br>
