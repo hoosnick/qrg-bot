@@ -5,7 +5,13 @@
 A Quick Response code is a two-dimensional pictographic code used for its fast readability and comparatively large storage capacity. The code consists of black modules arranged in a square pattern on a white background. The information encoded can be made up of any kind of data (e.g., binary, alphanumeric, or Kanji symbols)
 ***
 ## Introduction & Usage:
-Bot encrypts your text, file messages into a qr code, and takes link, media files, text from qr coded images<br>It also works in inline mode and groups:<br>Inline mode: `@QRG_Bot some text`<br>In groups: reply with `/read` command to image(qr code)
+Bot encrypts your text, file messages into a qr code, and takes link, media files, text from qr coded images<br>It also works in inline mode and groups:<br>Inline mode: `@QRG_Bot some text`
+
+![image](https://github.com/hoosnick/qrg-bot/assets/73847672/ad7e477d-d871-4b96-9b2f-6c002b0b8fcc)
+<br>In groups: reply with `/read` command to image(qr code)
+
+![image](https://github.com/hoosnick/qrg-bot/assets/73847672/345c613b-0beb-433c-9431-1293412e2db6)
+
 ***
 ## Installation:
 - `git clone https://github.com/hoosnick/qrg-bot`<br>
