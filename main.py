@@ -1,9 +1,7 @@
 import telebot
-
-from qrcodebot.handlers import (start, photo, text, file)
-from qrcodebot.handlers import (callback_factory, inline_photo)
-
-from constants import (TOKEN, CONTENT_TYPES)
+from loguru import logger
+from constants import CONTENT_TYPES, TOKEN
+from qrcodebot.handlers import users
 
 bot = telebot.TeleBot(
     token=TOKEN,
@@ -14,48 +12,49 @@ bot = telebot.TeleBot(
 
 def register_handlers() -> None:
     bot.register_message_handler(
-        callback=start,
+        callback=users.start,
         chat_types=['private'],
         commands=['start'],
         pass_bot=True
     )
     bot.register_message_handler(
-        callback=text,
+        callback=users.text,
         chat_types=['private'],
         content_types=['text'],
         pass_bot=True
     )
     bot.register_message_handler(
-        callback=file,
+        callback=users.file,
         chat_types=['private'],
         content_types=CONTENT_TYPES,
         pass_bot=True
     )
     bot.register_message_handler(
-        callback=photo,
+        callback=users.photo,
         chat_types=['private'],
         content_types=['photo'],
         pass_bot=True
     )
     bot.register_message_handler(
-        callback=photo,
+        callback=users.photo,
         chat_types=['supergroup', 'group'],
         commands=['read'],
         pass_bot=True
     )
     bot.register_inline_handler(
-        callback=inline_photo,
+        callback=users.inline_photo,
         pass_bot=True,
-        func=lambda q: len(q.query) > 1
+        func=lambda q: len(q.query) >= 1
     )
     bot.register_callback_query_handler(
-        callback=callback_factory,
+        callback=users.callback_factory,
         pass_bot=True,
         func=lambda c: True
     )
 
 
 def main():
+    logger.add("bot.log", backtrace=True, diagnose=True)
     register_handlers()
     bot.infinity_polling(skip_pending=True)
 
