@@ -17,18 +17,6 @@ from qrcodebot.utils.error_handler import error_handler
 path = os.getcwd()
 
 
-def get_drawer(s: int):
-    styles = {
-        1: moduledrawers.SquareModuleDrawer,
-        2: moduledrawers.GappedSquareModuleDrawer,
-        3: moduledrawers.CircleModuleDrawer,
-        4: moduledrawers.RoundedModuleDrawer,
-        5: moduledrawers.VerticalBarsDrawer,
-        6: moduledrawers.HorizontalBarsDrawer
-    }
-    return styles[s]
-
-
 def create_qr(
     data: str, user_id: int, style: int = 1,
     with_all_styles: bool = False
